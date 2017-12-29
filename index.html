@@ -1,0 +1,192 @@
+<html>
+	<head>
+		<title>last Test</title>
+		<script>
+			//PLAY MUSIC
+			function playHymne(){document.getElementById('hymne').play();}
+
+			var hh = null;
+			function volHymne(){
+				document.getElementById('hymne').volume -= 0.0001 
+			}
+			//ROTATION ROUES
+				//ROUE ROUGE
+				var a = 0;
+				function rouerouge(){
+					document.getElementById('roue1').style.transform = "rotate("+a+"deg)";
+					document.getElementById('roue2').style.transform = "rotate("+a+"deg)";
+					a+=2;
+					if(a==360) a=0;
+				}
+				var rr = setInterval(rouerouge);
+				//ROUE VERT
+				var b = 0;
+				function rouevert(){
+					document.getElementById('roue3').style.transform = "rotate("+b+"deg)";
+					document.getElementById('roue4').style.transform = "rotate("+b+"deg)";
+					b+=2;
+					if(b==360) b=0;
+				}
+				var rv = setInterval(rouevert);
+				
+			//PLAY TOUTES LES ANIMATIONS
+			function playanimation(){
+				clearInterval(rr);clearInterval(rv);
+				rr = setInterval(rouerouge);
+				rv = setInterval(rouevert);
+				document.getElementById('img1').style.animationPlayState = "running";
+				document.getElementById('carred').style.animationPlayState = "running";
+				document.getElementById('cargreen').style.animationPlayState = "running";
+				document.getElementById('ledred').style.animationPlayState = "running";
+				document.getElementById('ledorange').style.animationPlayState = "running";
+				document.getElementById('ledgreen').style.animationPlayState = "running";
+			}
+			
+			//PAUSE VOITURES
+			function pauserr(){
+				document.getElementById('carred').style.animationPlayState = "paused";
+				clearInterval(rr);
+			}
+			function pauserv(){
+				document.getElementById('cargreen').style.animationPlayState = "paused";
+				clearInterval(rv);
+			}
+			
+			//PAUSE ROAD & LED
+			function pauseanimation(){
+				document.getElementById('img1').style.animationPlayState = "paused";
+				document.getElementById('ledred').style.animationPlayState = "paused";
+				document.getElementById('ledorange').style.animationPlayState = "paused";
+				document.getElementById('ledgreen').style.animationPlayState = "paused";	
+				clearInterval(rr);clearInterval(rv);
+			}
+			
+			//HYMNE
+			var c = 0;
+			var h = null;
+			function hymne(){
+				c++;
+				if(c>=3000) {clearInterval(h);playanimation();}
+			}
+			
+
+			//RED, ORANGE, GREEN
+			var d = 0;
+			var color = null;
+			function LED(){
+				if(d<=500){
+					document.getElementById('ledred').style.visibility = "hidden";
+					document.getElementById('ledorange').style.visibility = "hidden";
+					document.getElementById('ledgreen').style.visibility = "visible";
+					color = "green";
+				}
+				else{
+					if(d<=600){
+						document.getElementById('ledred').style.visibility = "hidden";
+						document.getElementById('ledorange').style.visibility = "visible";
+						document.getElementById('ledgreen').style.visibility = "hidden";
+						color = "orange";
+					}
+					else{
+						if(d<1000){
+							document.getElementById('ledred').style.visibility = "visible";
+							document.getElementById('ledorange').style.visibility = "hidden";
+							document.getElementById('ledgreen').style.visibility = "hidden";
+							color = "red";
+						}
+					}
+				}
+				d++;
+				if(document.getElementById('carred').offsetLeft == 140){
+					pauseanimation(); pauserr(); pauserv();
+					h = setInterval(hymne,1000);
+					playHymne();
+				}
+				else{
+					if(color == "red" || color == "orange"){
+						hh = setInterval(volHymne,1000);
+						if(document.getElementById('carred').offsetLeft == 560){clearInterval(h);pauseanimation(); pauserr(); rouevert();c=0;}
+						if(document.getElementById('cargreen').offsetLeft == 540){clearInterval(h);pauseanimation(); pauserv();c=0;}
+					}
+					else playanimation();
+				}
+				if(d==1000) d=0;
+			} 
+			var l = setInterval(LED,10);
+		</script>
+		
+		<style>
+			@keyframes animation1{from {left:0px;} to {left:4600px;}}
+			@keyframes animation2{from {left:0px;} to {left:-4600px;}}
+			
+			#content{
+				position:relative;
+				margin:0;
+				padding:0;
+				overflow-x:scroll;
+				border:1px solid black;
+			}
+			
+			#img1{
+				position:relative;
+				animation-name:animation2;animation-duration:20s;animation-iteration-count:infinite;
+			}
+			
+			.car1, .car2{width:256px; height:256px;}
+			
+			#roue1{position:relative;width:50px;height:50px;top:-70px;left:-220px;}
+			#roue2{position:relative;width:50px;height:50px;top:-70px;left:-150px;}
+			#roue3{position:relative;width:50px;height:50px;top:-70px;left:-220px;}
+			#roue4{position:relative;width:50px;height:50px;top:-70px;left:-150px;}
+			
+			#carred{
+			position: relative;
+			top:-250px;
+			animation-name:animation1;animation-duration:90s;animation-iteration-count:infinite;
+			}
+			#cargreen{
+			position: relative;
+			top:-450px;
+			animation-name:animation1;animation-duration:120s;animation-iteration-count:infinite;
+			}
+			
+			#ledred, #ledorange, #ledgreen{
+				position:relative;
+				width:20px;
+				height:20px;
+				z-index:22;
+				animation-name:animation2;animation-duration:20s;animation-iteration-count:infinite;
+			}
+			
+			.red{position:relative;left:4756px;top:-780px;}
+			.orange{position:relative;left:4756px;top:-780px;}
+			.green{position:relative;left:4756px;top:-780px;}
+			
+			
+		</style>
+	</head>
+	<body>
+		<audio controls="controls" id="hymne">
+			<source src="audio/hn.ogg" type="audio/ogg">
+		</audio>
+		
+		<div id="content">
+			<img src="img/road.jpg" id="img1">
+			
+			<div id="carred">
+				<img src="img/car.png" class="car1">
+				<img src="img/tyre.png" id="roue1">
+				<img src="img/tyre.png" id="roue2">
+			</div>
+			<div id="cargreen">
+				<img src="img/car2.png" class="car2">
+				<img src="img/tyre.png" id="roue3">
+				<img src="img/tyre.png" id="roue4">
+			</div>
+			
+			<div class="red"><img src="img/red.png" id="ledred"></div>
+			<div class="orange"><img src="img/orange.png" id="ledorange"></div>
+			<div class="green"><img src="img/green.png" id="ledgreen"></div>
+		</div>
+	</body>
+</html>
